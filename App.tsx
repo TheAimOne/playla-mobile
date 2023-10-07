@@ -1,20 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NativeBaseProvider } from 'native-base';
+import { StyleSheet } from 'react-native';
+import Layout from './Layout';
+
+const LinearGradient = require('expo-linear-gradient').LinearGradient
+
+// SplashScreen.preventAutoHideAsync()
 
 export default function App() {
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NativeBaseProvider config={config} >
+      <Layout />
+    </NativeBaseProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  title: {
+    marginTop: 20
+  }
 });
+
+const config = {
+  dependencies: {
+    'linear-gradient': LinearGradient
+  }
+}
