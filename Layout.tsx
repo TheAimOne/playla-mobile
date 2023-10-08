@@ -10,7 +10,7 @@ import Footer from './components/Footer'
 import Home from './pages/home/Home'
 
 const Stack = createNativeStackNavigator()
-const options = { headerTitle: (props: any) => <TopBar /> }
+const options = { headerTitle: (props: any) => <TopBar />, headerBackVisible: false}
 
 
 const Layout = () => {

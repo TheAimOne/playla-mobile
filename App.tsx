@@ -1,6 +1,8 @@
 import { NativeBaseProvider } from 'native-base';
 import { StyleSheet } from 'react-native';
 import Layout from './Layout';
+import Login from './pages/login/Login';
+import React from 'react';
 
 const LinearGradient = require('expo-linear-gradient').LinearGradient
 
@@ -8,9 +10,17 @@ const LinearGradient = require('expo-linear-gradient').LinearGradient
 
 export default function App() {
 
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false)
+
+  const loginSuccess = () => {
+    console.log("auth")
+    setIsAuthenticated(true)
+  }
+
   return (
     <NativeBaseProvider config={config} >
-      <Layout />
+      {!isAuthenticated && <Login loginSuccess={loginSuccess} />}
+      {isAuthenticated && <Layout />}
     </NativeBaseProvider>
   );
 }

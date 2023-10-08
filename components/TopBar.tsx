@@ -9,7 +9,6 @@ const TopBar = () => {
     return (
         <>
             <StatusBar barStyle={"default"} backgroundColor={"green"} />
-            <Box safeAreaTop />
             <HStack style={styles.container}>
                 <Icon size={8} as={<MaterialIcons name='sports-soccer' />} color={"green.800"}/>
                 <Heading color={'green.800'} >Play Lah!</Heading>
@@ -22,12 +21,8 @@ export default TopBar
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
         flex: 1,
+        paddingRight: 20,
         justifyContent: 'center',
-        padding: 12,
-    },
-    logo: {
-        fontSize: 24,
     }
 })
