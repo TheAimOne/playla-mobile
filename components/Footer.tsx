@@ -1,10 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
 import { Box, Center, HStack, Icon, Pressable, Text } from 'native-base'
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { navigate } from '../RootNavigation'
-import { IconProps } from '@expo/vector-icons/build/createIconSet'
 
 
 const footerItems = [

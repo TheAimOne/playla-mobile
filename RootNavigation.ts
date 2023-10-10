@@ -7,3 +7,7 @@ export const navigationRef: RefObject<NavigationContainerRef<ParamListBase>> = R
 export function navigate(name: string, params: any) {
   navigationRef.current?.navigate(name, params);
 }
+
+export function navigation() {
+  return navigationRef.current;
+}
