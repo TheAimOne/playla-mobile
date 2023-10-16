@@ -2,6 +2,8 @@ import { Box, Button, Input, Text, VStack, View } from 'native-base'
 import React from 'react'
 import Card from '../../components/Card'
 import { StyleSheet } from 'react-native'
+import { useDispatch } from 'react-redux'
+import { setUser } from '../../store/features/user/user-slice'
 
 const backgroundColor = {
     linearGradient: {
@@ -16,8 +18,19 @@ interface LoginProps {
 }
 
 const Login = (props: LoginProps) => {
-    const login = React.useCallback(() => {
+    const dispatch = useDispatch()
+
+    const onLogin = React.useCallback(() => {
         props.loginSuccess()
+        dispatch(setUser({
+            isAuthenticated: true,
+            memberId: "",
+            name: "Ajay",
+            status: "ACTIVE",
+            email: 'ajay.sankaran96@gmail.com',
+            mobile: '8283810',
+            shortName: 'Aj'
+        }))
     }, [])
 
     return (
@@ -29,7 +42,7 @@ const Login = (props: LoginProps) => {
                         <Input placeholder='User Name' />
                         <Input placeholder='Password' />
                         <Button marginTop={15}>
-                            <Text color={'white'} onPress={login}>Login</Text>
+                            <Text color={'white'} onPress={onLogin}>Login</Text>
                         </Button>
                     </VStack>
                 </Card>

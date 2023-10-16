@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { User } from '../../../core'
+import { RootState } from '../../store'
 
 export const USER_SLICE = 'user'
 
@@ -14,12 +15,23 @@ export const userSlice = createSlice({
     name: USER_SLICE,
     initialState: initialState,
     reducers: {
-        login: (state) => {
-            state.isAuthenticated = true
+        setUser: (state: User, action: PayloadAction<User>) => {
+            console.log("Calling Dispatch")
+            const user = action.payload;
+            state.isAuthenticated = user.isAuthenticated;
+            state.email = user.email;
+            state.memberId = user.memberId;
+            state.mobile = user.mobile;
+            state.name = user.name;
+            state.shortName = user.shortName;
+            state.status = user.status
         }
     }
 })
 
-export const { login } = userSlice.actions;
+export const { setUser } = userSlice.actions;
+
+export const selectUser = (state: RootState) => state.user;
+export const selectMemberId = (state: RootState) => state.user.memberId
 
 export default userSlice.reducer

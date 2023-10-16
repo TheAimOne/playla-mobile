@@ -1,11 +1,18 @@
-import { Box, HStack, Icon, Image, Text, VStack, View } from 'native-base'
+import { Box, Text, VStack } from 'native-base'
 import React from 'react'
-import Card from '../../components/Card'
 import { StyleSheet } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
 import GroupCard from '../../components/GroupCard'
+import { selectMemberId, selectUser } from '../../store/features/user/user-slice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { useDispatch } from 'react-redux'
+import { getGroupsAction } from '../../store/features/group/group-api'
 
 const Home = () => {
+  const dispatch = useAppDispatch();
+  const memberId = useAppSelector(selectMemberId)
+  console.log("memberId::", memberId)
+  const groupList = dispatch(getGroupsAction(memberId))
+
   return (
     <Box>
       <Text style={styles.header}>My Groups</Text>
