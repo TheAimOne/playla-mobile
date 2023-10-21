@@ -10,15 +10,12 @@ export const groupListSlice = createSlice({
     name: GROUP_LIST_SLICE,
     initialState: groupListState,
     reducers: {
-        getGroupsByMemberId: () => {
-
-        },
         setGroupList: (state: Group[], action: PayloadAction<Group[]>) => {
-
+            state = [...action.payload]
         }
     }
 })
 
-export const { getGroupsByMemberId, setGroupList } = groupListSlice.actions;
+export const { setGroupList } = groupListSlice.actions;
 
 export default groupListSlice.actions;

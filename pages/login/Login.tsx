@@ -24,7 +24,7 @@ const Login = (props: LoginProps) => {
         props.loginSuccess()
         dispatch(setUser({
             isAuthenticated: true,
-            memberId: "",
+            memberId: "733385ca-ff27-421b-a905-82865eb66004",
             name: "Ajay",
             status: "ACTIVE",
             email: 'ajay.sankaran96@gmail.com',

@@ -23,10 +23,10 @@ const GroupCard = (props: GroupCardProps) => {
                         <Text fontSize={16} fontWeight={"500"}>{props.name}</Text>
                         <Text color={'gray.500'}>{props.participants} Participants</Text>
                     </VStack>
-                    <Box style={styles.upcomingEventContainer} borderLeftColor={'gray.500'}>
+                    {props.upcomingEventDate && <Box style={styles.upcomingEventContainer} borderLeftColor={'gray.500'}>
                         <Icon as={<MaterialIcons name='calendar-today' />} size={35} />
                         <Text flexWrap={'wrap'} >{props.upcomingEventDate}</Text>
-                    </Box>
+                    </Box>}
                 </HStack>
             </Card>
         </>

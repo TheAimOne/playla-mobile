@@ -16,7 +16,6 @@ export const userSlice = createSlice({
     initialState: initialState,
     reducers: {
         setUser: (state: User, action: PayloadAction<User>) => {
-            console.log("Calling Dispatch")
             const user = action.payload;
             state.isAuthenticated = user.isAuthenticated;
             state.email = user.email;
