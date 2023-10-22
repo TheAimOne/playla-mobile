@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 type FormValue<T> = T | undefined | null
 
 interface FormConfig {
@@ -18,8 +20,11 @@ export class FormFieldControl<T> {
         this.config = config
     }
 
+    getValue() {
+        return <T>this.value;
+    }
+
     get valid() {
-        console.log("ISVALID::", this.config.required && !this.value && this.touched)
         if (this.config.required && !this.value && this.touched) {
             return false;
         }
@@ -27,38 +32,55 @@ export class FormFieldControl<T> {
     }
 }
 
-// export class FormGroup {
-//     private _controls: Map<string, FormFieldControl<any>>
+export interface FormGroupUtils {
+    setValue: (key: string, value: any) => void
+    get: (key: string) => FormFieldControl<any>
+    triggerChange: () => void
+    getValue: () => any
+    isValid: () => boolean
+    setError: (key: string, error: string | undefined) => void
+    getError: (key: string) => string | undefined
+    clearError: (key: string) => void
+}
 
-//     constructor(formControls: {[key: string]: FormFieldControl<any>}) {
-//         this._controls = new Map<string, FormFieldControl<any>>();
-//         for(const key in formControls) {
-//             this._controls.set(key, formControls[key])
-//         }
-//     }
-
-//     addFormControl<T,>(key: string, value: any, config: FormConfig) {
-//         this._controls.set(key, new FormFieldControl<T>(value, config))
-//         console.log(this._controls)
-//     }
-
-//     isValid() {
-//         return [...this._controls.values()].every(control => control.isValid())
-//     }
-
-//     get(key: string) {
-//         return this._controls.get(key)
-//     }
-
-//     getAllValues() {
-//         let formValue: any = {}
-//         for (const [key, control] of this._controls) {
-//             formValue[key] = control.getValue()
-//         }
-//         return formValue
-//     }
-
-//     getAllControls() {
-//         return [...this._controls.values()]
-//     }
-// }
+export function getFormGroupUtils(controls: FormGroup, setControls: Dispatch<SetStateAction<FormGroup>>) {
+    const formGroup: FormGroupUtils = {
+        setValue: (key: string, value: any) => {
+            const control = controls[key]
+            control.value = value
+            control.touched = true
+            controls[key] = control
+            setControls({ ...controls })
+        },
+        get: (key: string) => {
+            return controls[key]
+        },
+        triggerChange: () => {
+            setControls(prevValue => {
+                Object.keys(controls).forEach(key => controls[key].touched = true)
+                return { ...controls }
+            })
+        },
+        getValue: () => {
+            let obj: any = {}
+            Object.keys(controls).forEach(key => {
+                console.log(key, controls[key].value)
+                obj[key] = controls[key].getValue()
+            })
+            return obj
+        },
+        isValid: () => {
+            return Object.values(controls).every(control => control.valid);
+        },
+        setError: (key: string, error: string | undefined) => {
+            controls[key].error = error
+        },
+        getError: (key: string) => {
+            return controls[key].error
+        },
+        clearError: (key: string) => {
+            controls[key].error = undefined
+        }
+    }
+    return formGroup;
+}

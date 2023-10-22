@@ -1,11 +1,13 @@
-import { Box, Button, HStack, Icon, FormControl, Image, Input, Text, TextArea, VStack, View } from 'native-base'
-import React from 'react'
-import Card from '../../components/Card'
-import { StyleSheet } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
-import { FormFieldControl, Group } from '../../core'
+import { Box, Button, FormControl, HStack, Icon, Image, Input, Text, TextArea, VStack } from 'native-base'
+import React from 'react'
+import { StyleSheet } from 'react-native'
+import Card from '../../components/Card'
+import { FormFieldControl, FormGroupUtils, Group, GroupMember } from '../../core'
 import useFormGroup from '../../core/hooks/useFormGroup'
 import httpClient from '../../config'
+import { selectMemberId } from '../../store/features/user/user-slice'
+import { useAppSelector } from '../../store/hooks'
 
 const groupFormControls = {
     groupId: new FormFieldControl<string>(null, { required: false }),
@@ -16,21 +18,27 @@ const groupFormControls = {
 
 const CreateGroup = () => {
     const imageUri = require('../../assets/user-group.png');
+    const memberId = useAppSelector(selectMemberId)
     const [group, setGroup] = React.useState<Group | undefined>(undefined)
 
-    const groupForm = useFormGroup(groupFormControls)
+    const groupForm: FormGroupUtils = useFormGroup(groupFormControls)
 
-    const handleInputChange = (value: any, key: string) => {
-        console.log("VALUE:", value)
+    const handleInputChange = React.useCallback((value: any, key: string) => {
         groupForm.setValue(key, value)
-        // formControl.setValue(key, value);
-    }
-    console.log("RERENDER**********")
-    const onCreateGroup = () => {
+    }, [])
+
+    const onCreateGroup = React.useCallback(() => {
         groupForm.triggerChange();
-        console.log("ALL VALYES::", groupForm.getAllValue())
+        if (groupForm.isValid()) {
+            const groupInfo: Group = groupForm.getValue() as Group
+            groupInfo.size = +groupInfo.size
+            const groupMembers: GroupMember[] = [{memberId: memberId, isAdmin: true, status: 'ACTIVE'}]
+            httpClient.post("group", { groupInfo: groupInfo, members: groupMembers }).then(response => {
+                console.log(response)
+            })
+        }
         
-    }
+    }, [])
 
     return (
         <Box style={styles.createGroupContainer}>
