@@ -26,7 +26,7 @@ const Home = () => {
 
   return (
     <Box style={styles.homeContainer}>
-      <Box>
+      <Box style={styles.myGroupContainer}>
         <Text style={styles.header}>My Groups</Text>
         {isLoading && <Spinner color="green.500" />}
         {!isLoading && groupList.length == 0 &&
@@ -50,11 +50,13 @@ const styles = StyleSheet.create({
   homeContainer: {
     margin: 6,
     marginTop: 15,
-    flex: 1
   },
   header: {
     fontSize: 22,
     fontWeight: '600',
+  },
+  myGroupContainer: {
+    height: '70%'
   },
   groupListContainer: {
     margin: 10,
@@ -65,6 +67,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   eventContainer: {
-    top: '30%'
+    // top: '30%'
   }
 })

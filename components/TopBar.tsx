@@ -21,8 +21,11 @@ export default TopBar
 
 const styles = StyleSheet.create({
     container: {
+        display: 'flex',
+        alignItems: 'center',
         flex: 1,
-        paddingRight: 20,
-        justifyContent: 'center',
+        flexDirection: 'row'
+        // flex: 1,
+        // justifyContent: 'center',
     }
 })
