@@ -24,8 +24,8 @@ export class FormFieldControl<T> {
         return <T>this.value;
     }
 
-    get valid() {
-        if (this.config.required && !this.value && this.touched) {
+    isValid(triggerTouch = false) {
+        if (this.config.required && !this.value && (this.touched || triggerTouch)) {
             return false;
         }
         return true;
@@ -44,6 +44,12 @@ export interface FormGroupUtils {
 }
 
 export function getFormGroupUtils(controls: FormGroup, setControls: Dispatch<SetStateAction<FormGroup>>) {
+    const triggerChange = () => {
+        setControls(prevValue => {
+            Object.keys(controls).forEach(key => controls[key].touched = true)
+            return { ...controls }
+        })
+    }
     const formGroup: FormGroupUtils = {
         setValue: (key: string, value: any) => {
             const control = controls[key]
@@ -55,22 +61,18 @@ export function getFormGroupUtils(controls: FormGroup, setControls: Dispatch<Set
         get: (key: string) => {
             return controls[key]
         },
-        triggerChange: () => {
-            setControls(prevValue => {
-                Object.keys(controls).forEach(key => controls[key].touched = true)
-                return { ...controls }
-            })
-        },
+        triggerChange: triggerChange,
         getValue: () => {
             let obj: any = {}
             Object.keys(controls).forEach(key => {
-                console.log(key, controls[key].value)
+                // console.log(key, controls[key].value)
                 obj[key] = controls[key].getValue()
             })
             return obj
         },
         isValid: () => {
-            return Object.values(controls).every(control => control.valid);
+            triggerChange();
+            return Object.values(controls).every(control => control.isValid(true));
         },
         setError: (key: string, error: string | undefined) => {
             controls[key].error = error

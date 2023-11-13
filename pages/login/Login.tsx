@@ -4,14 +4,7 @@ import Card from '../../components/Card'
 import { StyleSheet } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../store/features/user/user-slice'
-
-const backgroundColor = {
-    linearGradient: {
-        colors: ['#67B26F', '#4ca2cd'],
-        start: [0, 1],
-        end: [1, 0]
-    }
-}
+import { LOGIN_BG_COLOR } from '../../core/constants'
 
 interface LoginProps {
     loginSuccess: () => void
@@ -34,9 +27,9 @@ const Login = (props: LoginProps) => {
     }, [])
 
     return (
-        <Box bg={backgroundColor} height={'100%'} flex={1} justifyContent={'center'}>
+        <Box bg={LOGIN_BG_COLOR} height={'100%'} flex={1} justifyContent={'center'}>
             <Box margin={5} >
-                <Card padding={4} >
+                <Card style={{padding: 20}} >
                     <Text fontSize={20} fontWeight={'800'}>Login</Text>
                     <VStack style={styles.loginContainer} >
                         <Input placeholder='User Name' />

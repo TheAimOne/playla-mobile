@@ -1,17 +1,18 @@
-import { Box, StyledProps } from 'native-base'
 import { InterfaceBoxProps } from 'native-base/lib/typescript/components/primitives/Box'
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
 interface ICardProps extends InterfaceBoxProps {
     children: React.ReactNode
+    style?: StyleProp<ViewStyle> | undefined
 }
 
 const Card = (props: ICardProps) => {
+    
   return (
-    <Box rounded={"lg"} style={styles.cardContainer} {...props}>
+    <View style={[styles.cardContainer, props.style]}>
         {props.children}
-    </Box>
+    </View>
   )
 }
 

@@ -1,15 +1,14 @@
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
 import 'react-native-gesture-handler'
 import { navigationRef } from './RootNavigation'
+import BottomNavigator from './components/BottomNavigator'
 import DrawerButton from './components/LeftIcon'
 import TopBar from './components/TopBar'
 import CreateGroup from './pages/create-group/CreateGroup'
-import BottomNavigator from './components/BottomNavigator'
+import HeaderLeftBackButton from './components/HeaderComponents'
 
-const Stack = createNativeStackNavigator();
 const DrawerNavigator = createDrawerNavigator();
 const options = {
     headerTitle: (props: any) => <TopBar />, headerBackVisible: false,
@@ -18,8 +17,12 @@ const options = {
 
 const DrawerLayout = () => {
     return (<DrawerNavigator.Navigator >
-        <DrawerNavigator.Screen name='bottomLayout' component={BottomNavigatorLayout} options={{headerShown: false,title: 'Home'}} />
-        <DrawerNavigator.Screen name='createGroup' component={CreateGroup} options={{ headerShown: true, title: 'Create Group' }} />
+        <DrawerNavigator.Screen name='bottomLayout' component={BottomNavigatorLayout} options={{ headerShown: false, title: 'Home' }} />
+        <DrawerNavigator.Screen name='createGroup' component={CreateGroup}
+            options={{
+                headerShown: true, title: 'Create Group',
+                headerLeft: HeaderLeftBackButton
+            }} />
     </DrawerNavigator.Navigator>)
 }
 
@@ -32,7 +35,6 @@ const Layout = () => {
         <>
             <NavigationContainer ref={navigationRef} >
                 <DrawerLayout />
-                
             </NavigationContainer>
         </>
     )

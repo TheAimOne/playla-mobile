@@ -1,13 +1,15 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { Box, Button, FormControl, HStack, Icon, Image, Input, Text, TextArea, VStack } from 'native-base'
-import React from 'react'
-import { StyleSheet } from 'react-native'
+import React, { useRef } from 'react'
+import { StyleSheet, View } from 'react-native'
 import Card from '../../components/Card'
+import CustomAlertDialog from '../../components/CustomAlertDialog'
+import httpClient from '../../config'
 import { FormFieldControl, FormGroupUtils, Group, GroupMember } from '../../core'
 import useFormGroup from '../../core/hooks/useFormGroup'
-import httpClient from '../../config'
 import { selectMemberId } from '../../store/features/user/user-slice'
 import { useAppSelector } from '../../store/hooks'
+import { useNavigation } from '@react-navigation/native'
 
 const groupFormControls = {
     groupId: new FormFieldControl<string>(null, { required: false }),
@@ -19,26 +21,42 @@ const groupFormControls = {
 const CreateGroup = () => {
     const imageUri = require('../../assets/user-group.png');
     const memberId = useAppSelector(selectMemberId)
-    const [group, setGroup] = React.useState<Group | undefined>(undefined)
-
+    const alertRef = useRef<typeof CustomAlertDialog | any>()
+    const [alertMessage, setAlertMessage] = React.useState("");
+    const navigation = useNavigation();
+    const [isSuccessful, setIsSuccessful] = React.useState(false)
     const groupForm: FormGroupUtils = useFormGroup(groupFormControls)
-
+    
     const handleInputChange = React.useCallback((value: any, key: string) => {
         groupForm.setValue(key, value)
     }, [])
 
     const onCreateGroup = React.useCallback(() => {
-        groupForm.triggerChange();
+        setAlertMessage("Group Created Successfully")
+        console.log("VALID::", groupForm.isValid());
         if (groupForm.isValid()) {
             const groupInfo: Group = groupForm.getValue() as Group
             groupInfo.size = +groupInfo.size
-            const groupMembers: GroupMember[] = [{memberId: memberId, isAdmin: true, status: 'ACTIVE'}]
+            const groupMembers: GroupMember[] = [{ memberId: memberId, isAdmin: true, status: 'ACTIVE' }]
             httpClient.post("group", { groupInfo: groupInfo, members: groupMembers }).then(response => {
-                console.log(response)
+                setAlertMessage("Group Created Successfully")
+                setIsSuccessful(true)
+            }).catch(err => {
+                setAlertMessage("Group Creation Failed!")
+                setIsSuccessful(false)
             })
         }
-        
+
     }, [])
+
+    const onClose = () => {
+        alertRef.current.toggleAlert(false);
+        console.log("isSuccessful", isSuccessful)
+        if(isSuccessful) {
+            navigation.goBack();
+        }
+        
+    }
 
     return (
         <Box style={styles.createGroupContainer}>
@@ -54,14 +72,14 @@ const CreateGroup = () => {
                         </HStack>
                     </Box>
                     <VStack style={styles.inputContainer}>
-                        <FormControl isInvalid={!groupForm.get('name')?.valid}>
+                        <FormControl isInvalid={!groupForm.get('name')?.isValid()}>
                             <FormControl.Label>Group Name</FormControl.Label>
                             <Input size={'md'} variant={'underlined'} placeholder='Enter Group Name'
                                 onChangeText={text => handleInputChange(text, 'name')} isRequired={true} />
                         </FormControl>
-                        <FormControl isInvalid={!groupForm.get('size')?.valid}>
+                        <FormControl isInvalid={!groupForm.get('size')?.isValid()}>
                             <FormControl.Label>Number of Participants</FormControl.Label>
-                            <Input size={'md'} variant={'underlined'} placeholder='' 
+                            <Input size={'md'} variant={'underlined'} placeholder=''
                                 onChangeText={text => handleInputChange(text, 'size')} isRequired={true} />
                         </FormControl>
                         <TextArea h={20} placeholder='Description' autoCompleteType={''}
@@ -72,6 +90,12 @@ const CreateGroup = () => {
                     </VStack>
                 </VStack>
             </Card>
+            <CustomAlertDialog ref={alertRef} title='Test'
+                alertBody={<View><Text>{alertMessage}</Text></View>}
+                alertFooter={
+                    <Button onPress={onClose}>
+                        <Text color={'white'}>Close</Text>
+                    </Button>} />
         </Box>
     )
 }
