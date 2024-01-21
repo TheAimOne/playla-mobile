@@ -9,7 +9,8 @@ interface FormConfig {
 export type FormGroup = { [key: string]: FormFieldControl<any> }
 
 export class FormFieldControl<T> {
-    value: FormValue<T> = undefined
+
+    private _value: FormValue<T>
     disabled: boolean = false;
     error: string | undefined = undefined
     config: FormConfig = {}
@@ -18,6 +19,14 @@ export class FormFieldControl<T> {
     constructor(value: FormValue<T>, config: FormConfig) {
         this.value = value;
         this.config = config
+    }
+
+    set value(val: any) {
+        this._value = val as T 
+    }
+
+    get value() {
+        return this._value
     }
 
     getValue() {
@@ -37,7 +46,8 @@ export interface FormGroupUtils {
     get: (key: string) => FormFieldControl<any>
     triggerChange: () => void
     getValue: () => any
-    isValid: () => boolean
+    isValid: () => boolean,
+    isFieldValid: (key: string) => boolean,
     setError: (key: string, error: string | undefined) => void
     getError: (key: string) => string | undefined
     clearError: (key: string) => void
@@ -65,7 +75,6 @@ export function getFormGroupUtils(controls: FormGroup, setControls: Dispatch<Set
         getValue: () => {
             let obj: any = {}
             Object.keys(controls).forEach(key => {
-                // console.log(key, controls[key].value)
                 obj[key] = controls[key].getValue()
             })
             return obj
@@ -73,6 +82,9 @@ export function getFormGroupUtils(controls: FormGroup, setControls: Dispatch<Set
         isValid: () => {
             triggerChange();
             return Object.values(controls).every(control => control.isValid(true));
+        },
+        isFieldValid: (key) => {
+            return controls[key].isValid();
         },
         setError: (key: string, error: string | undefined) => {
             controls[key].error = error

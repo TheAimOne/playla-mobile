@@ -7,7 +7,6 @@ import { DrawerActions } from '@react-navigation/native'
 const DrawerButton = () => {
 
     const openDrawer = React.useCallback(() => {
-        console.log("openDrawer")
         navigation()?.dispatch(DrawerActions.openDrawer)
     }, [])
 

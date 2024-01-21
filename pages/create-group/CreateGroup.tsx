@@ -1,15 +1,15 @@
 import { MaterialIcons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 import { Box, Button, FormControl, HStack, Icon, Image, Input, Text, TextArea, VStack } from 'native-base'
 import React, { useRef } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import Card from '../../components/Card'
-import CustomAlertDialog from '../../components/CustomAlertDialog'
+import { CustomAlertDialog } from '../../components/CustomAlertDialog'
 import httpClient from '../../config'
 import { FormFieldControl, FormGroupUtils, Group, GroupMember } from '../../core'
 import useFormGroup from '../../core/hooks/useFormGroup'
 import { selectMemberId } from '../../store/features/user/user-slice'
 import { useAppSelector } from '../../store/hooks'
-import { useNavigation } from '@react-navigation/native'
 
 const groupFormControls = {
     groupId: new FormFieldControl<string>(null, { required: false }),
@@ -22,27 +22,25 @@ const CreateGroup = () => {
     const imageUri = require('../../assets/user-group.png');
     const memberId = useAppSelector(selectMemberId)
     const alertRef = useRef<typeof CustomAlertDialog | any>()
-    const [alertMessage, setAlertMessage] = React.useState("");
     const navigation = useNavigation();
     const [isSuccessful, setIsSuccessful] = React.useState(false)
     const groupForm: FormGroupUtils = useFormGroup(groupFormControls)
-    
+
     const handleInputChange = React.useCallback((value: any, key: string) => {
         groupForm.setValue(key, value)
     }, [])
 
     const onCreateGroup = React.useCallback(() => {
-        setAlertMessage("Group Created Successfully")
-        console.log("VALID::", groupForm.isValid());
         if (groupForm.isValid()) {
             const groupInfo: Group = groupForm.getValue() as Group
             groupInfo.size = +groupInfo.size
             const groupMembers: GroupMember[] = [{ memberId: memberId, isAdmin: true, status: 'ACTIVE' }]
             httpClient.post("group", { groupInfo: groupInfo, members: groupMembers }).then(response => {
-                setAlertMessage("Group Created Successfully")
+                alertRef.current.showAlert("Group Created Successfully", "", "success")
                 setIsSuccessful(true)
             }).catch(err => {
-                setAlertMessage("Group Creation Failed!")
+                alertRef.current.showAlert("Group Creation Failed",
+                    `Reason: ${err?.message || 'No Reason Provided'}`, "error")
                 setIsSuccessful(false)
             })
         }
@@ -50,12 +48,11 @@ const CreateGroup = () => {
     }, [])
 
     const onClose = () => {
-        alertRef.current.toggleAlert(false);
-        console.log("isSuccessful", isSuccessful)
-        if(isSuccessful) {
+        alertRef.current.closeAlert(true);
+        if (isSuccessful) {
             navigation.goBack();
         }
-        
+
     }
 
     return (
@@ -90,8 +87,7 @@ const CreateGroup = () => {
                     </VStack>
                 </VStack>
             </Card>
-            <CustomAlertDialog ref={alertRef} title='Test'
-                alertBody={<View><Text>{alertMessage}</Text></View>}
+            <CustomAlertDialog ref={alertRef} title='Alert Message'
                 alertFooter={
                     <Button onPress={onClose}>
                         <Text color={'white'}>Close</Text>

@@ -1,7 +1,8 @@
 import axios from "axios";
+import { Platform } from "react-native";
 
 const httpClient = axios.create({
-  baseURL: 'http://10.0.2.2:8080/',
+  baseURL: Platform.OS === 'ios' ? 'http://localhost:8080/': 'http://10.0.2.2:8080/',
   timeout: 30000
 });
 

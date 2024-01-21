@@ -10,6 +10,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import GroupDetail from '../pages/group-detail/GroupDetail';
 import HeaderLeftBackButton, { headerLeftDrawerButtonComponent, headerTitleComponent } from './HeaderComponents';
+import AddEvent from '../pages/add-event/AddEvent';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -46,6 +47,7 @@ const tabNavigationOption: BottomTabNavigationOptions = {
 const HomeStackNavigator = () => {
     return (<Stack.Navigator>
         <Stack.Screen name='groupDetail' component={GroupDetail} options={{ headerShown: false }} />
+        <Stack.Screen name='addEvent' component={AddEvent} options={{ headerShown: false }} />
     </Stack.Navigator>)
 }
 
