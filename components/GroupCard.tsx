@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { Box, HStack, Icon, Image, Text, VStack, View } from 'native-base'
 import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
-import Card from './Card'
+import Card from './ui-components/Card'
 
 interface GroupCardProps {
     name: string

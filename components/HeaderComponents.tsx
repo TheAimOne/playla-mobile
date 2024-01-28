@@ -1,6 +1,6 @@
 import { Icon } from "native-base";
 import DrawerButton from "./LeftIcon";
-import TopBar from "./TopBar";
+import { TopBar } from "./TopBar";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";

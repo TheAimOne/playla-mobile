@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { Box, Button, Divider, HStack, Icon, Image, ScrollView, Skeleton, Text, VStack, View } from 'native-base'
 import React, { useEffect } from 'react'
-import Card from '../../../components/Card'
+import Card from '../../../components/ui-components/Card'
 import { StyleSheet } from 'react-native'
 import httpClient from '../../../config'
 

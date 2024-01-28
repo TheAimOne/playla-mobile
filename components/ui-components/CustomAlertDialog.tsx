@@ -62,7 +62,7 @@ const CustomAlertDialog = forwardRef<ICustomAlertRef, ICustomAlertDialogProps>((
     if (props.onClose) {
       props.onClose();
     }
-  }, [])
+  }, [props.onClose])
 
   return (
     <AlertDialog isOpen={isOpen} onClose={() => setIsOpen(false)} leastDestructiveRef={cancelRef}>

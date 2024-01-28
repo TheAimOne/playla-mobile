@@ -1,12 +1,12 @@
 import { MaterialIcons } from '@expo/vector-icons'
-import { Box, Button, Center, Divider, HStack, Icon, ScrollView, Skeleton, Text, VStack, View } from 'native-base'
-import React, { useEffect } from 'react'
-import Card from '../../../components/Card'
+import { Box, Button, Divider, HStack, Icon, ScrollView, Skeleton, Text, VStack, View } from 'native-base'
+import React from 'react'
 import { StyleSheet } from 'react-native'
-import httpClient from '../../../config'
-import commonStyles from '../utils'
 import { navigationRef } from '../../../RootNavigation'
-import { Event } from '../../../core'
+import Card from '../../../components/ui-components/Card'
+import httpClient from '../../../config'
+import { Event, EventDisplay, useIfFocused } from '../../../core'
+import commonStyles from '../utils'
 
 const loadingSkeleton = () => {
     return Array.from(Array(2).keys()).map(ar => (
@@ -19,16 +19,41 @@ const loadingSkeleton = () => {
 }
 
 const EventList = ({ groupId }: any) => {
-    const [eventList, setEventList] = React.useState<Event[]>([]);
+    const [eventList, setEventList] = React.useState<EventDisplay[]>([]);
     const [loading, setLoading] = React.useState(false)
 
-    useEffect(() => {
+    useIfFocused(() => {
         setLoading(true)
-        httpClient.get('group/events', { params: { groupId: groupId } }).then(response => {
+        httpClient.get('group/events', {
+            params: {
+                groupId: groupId,
+                getCountOfParticipants: true
+            }
+        }).then(response => {
             setLoading(false)
-            setEventList(response.data?.data || [])
+            if (response.data?.data) {
+                (response.data?.data as Event[]).forEach((event: Event) => {
+                    setDateAndTime(event, "start");
+                    setDateAndTime(event, "end");
+                })
+                setEventList(response.data?.data as EventDisplay[] || [])
+            }
         });
-    }, [groupId])
+    })
+
+    const setDateAndTime = React.useCallback((event: Event, key: string) => {
+        const eventKey = `${key}Date` as keyof Event
+        const apiKey = `${key}DateAndTime` as keyof Event
+        if (event[apiKey]) {
+            (event[eventKey] as Date) = new Date(event[apiKey] as Date);
+            (event[eventKey + "Display" as keyof Event] as string) =
+                `${(event[eventKey] as Date).toDateString()}`;
+            (event[`${key}TimeDisplay` as keyof Event] as string) =
+                `${(event[eventKey] as Date).toLocaleTimeString()}`;
+
+        }
+    }, [])
+
 
     const onAddPress = React.useCallback(() => {
         navigationRef.current?.navigate('groupStack',
@@ -46,7 +71,7 @@ const EventList = ({ groupId }: any) => {
             {eventList &&
                 <ScrollView marginTop={2} >
                     {eventList.map(eve =>
-                        <Card style={commonStyles.cardStyle}>
+                        <Card style={commonStyles.cardStyle} key={eve.eventId}>
                             <Text style={{ fontWeight: '500', fontSize: 16 }}>{eve.name} </Text>
                             <HStack marginTop={2} >
                                 <Icon as={<MaterialIcons name='location-pin' />} color={'gray.400'} size={5} />
@@ -54,13 +79,16 @@ const EventList = ({ groupId }: any) => {
                             </HStack>
                             <HStack justifyContent={'space-between'}>
                                 <HStack justifyContent={'center'} alignItems={'center'} padding={2}>
-                                    <Icon as={<MaterialIcons name='calendar-today' />} color={'red.700'} size={6} />
-                                    <Text marginLeft={2}>Sunday 20th July 2024</Text>
+                                    <Icon as={<MaterialIcons name='calendar-today' />} color={'red.700'} size={7} />
+                                    <VStack>
+                                        <Text marginLeft={2}>{eve.startDateDisplay}</Text>
+                                        <Text marginLeft={2} color={'coolGray.500'}>{eve.startTimeDisplay}</Text>
+                                    </VStack>
                                 </HStack>
                                 <Divider orientation='vertical' height={'90%'}></Divider>
                                 <VStack justifyContent={'center'} alignItems={'center'} padding={2}>
                                     <Text color={'gray.500'}>Participants</Text>
-                                    <Text fontSize={25} fontWeight={500} >10/20 </Text>
+                                    <Text fontSize={25} fontWeight={500} >{eve.noOfJoinedParticipants}/{eve.noOfParticipants} </Text>
                                 </VStack>
                             </HStack>
                         </Card>

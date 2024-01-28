@@ -1,16 +1,14 @@
-import React from 'react'
-import { createBottomTabNavigator, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
-import TopBar from './TopBar';
-import DrawerButton from './LeftIcon';
-import Home from '../pages/home/Home';
-import SearchGroup from '../pages/search-group/SearchGroup';
-import Events from '../pages/events/Events';
-import { Icon } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
+import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import GroupDetail from '../pages/group-detail/GroupDetail';
-import HeaderLeftBackButton, { headerLeftDrawerButtonComponent, headerTitleComponent } from './HeaderComponents';
-import AddEvent from '../pages/add-event/AddEvent';
+import { Icon } from 'native-base';
+import React from 'react';
+import AddEvent from '../../pages/add-event/AddEvent';
+import Events from '../../pages/events/Events';
+import GroupDetail from '../../pages/group-detail/GroupDetail';
+import Home from '../../pages/home/Home';
+import SearchGroup from '../../pages/search-group/SearchGroup';
+import HeaderLeftBackButton, { headerLeftDrawerButtonComponent, headerTitleComponent } from '../HeaderComponents';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -27,7 +25,7 @@ const getScreenOption = (screenName: string): BottomTabNavigationOptions => ({
     headerTitle: headerTitleComponent,
     headerLeft: headerLeftDrawerButtonComponent,
     tabBarIcon: ({ color, size }) => (
-        <Icon as={<MaterialIcons name={iconAndNames[screenName].icon} />} size={size} color={color} />
+        <Icon as={<MaterialIcons name={iconAndNames[screenName].icon as any} />} size={size} color={color} />
     ),
 })
 
@@ -46,8 +44,8 @@ const tabNavigationOption: BottomTabNavigationOptions = {
 
 const HomeStackNavigator = () => {
     return (<Stack.Navigator>
-        <Stack.Screen name='groupDetail' component={GroupDetail} options={{ headerShown: false }} />
-        <Stack.Screen name='addEvent' component={AddEvent} options={{ headerShown: false }} />
+        <Stack.Screen name='groupDetail' component={GroupDetail as any} options={{ headerShown: false }} />
+        <Stack.Screen name='addEvent' component={AddEvent as any} options={{ headerShown: false }} />
     </Stack.Navigator>)
 }
 

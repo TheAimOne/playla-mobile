@@ -24,13 +24,20 @@ export const userSlice = createSlice({
             state.name = user.name;
             state.shortName = user.shortName;
             state.status = user.status
+            return state
+        },
+        clearUser: (state: User, action: PayloadAction<User>) => {
+            state = initialState
+            return state
         }
     }
 })
 
-export const { setUser } = userSlice.actions;
+export const { setUser, clearUser } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;
 export const selectMemberId = (state: RootState) => state.user.memberId
+
+export const selectIsAuthenticated = (state: RootState) => state.user.isAuthenticated
 
 export default userSlice.reducer

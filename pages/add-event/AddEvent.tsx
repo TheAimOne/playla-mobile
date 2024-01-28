@@ -1,52 +1,55 @@
-import { Ionicons } from '@expo/vector-icons'
-import { Button, FormControl, HStack, Icon, Input, Select, Text, TextArea, VStack, View } from 'native-base'
-import React, { useRef } from 'react'
-import Card from '../../components/Card'
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { Platform } from 'react-native';
-import { Event, FormFieldControl } from '../../core';
-import useFormGroup from '../../core/hooks/useFormGroup';
-import httpClient from '../../config';
-import { CustomAlertDialog, ICustomAlertRef } from '../../components/CustomAlertDialog';
-import { navigationRef } from '../../RootNavigation';
+import { Ionicons } from '@expo/vector-icons';
 import { RouteProp } from '@react-navigation/native';
+import { Box, Button, FormControl, HStack, Icon, Input, ScrollView, Select, Text, TextArea, VStack, WarningOutlineIcon } from 'native-base';
+import React, { useRef } from 'react';
+import { navigationRef } from '../../RootNavigation';
+import Card from '../../components/ui-components/Card';
+import { CustomAlertDialog, ICustomAlertRef } from '../../components/ui-components/CustomAlertDialog';
+import DatePicker from '../../components/ui-components/DatePicker';
+import httpClient from '../../config';
+import { DateErrors, Event, FormFieldControl } from '../../core';
+import useFormGroup from '../../core/hooks/useFormGroup';
+import moment from 'moment'
 
 const eventFormControls = {
     eventId: new FormFieldControl<string>(null, { required: false }),
     name: new FormFieldControl<string>(null, { required: true }),
     type: new FormFieldControl<string>(null, { required: true }),
     noOfParticipants: new FormFieldControl<Number>(null, { required: true }),
-    startDate: new FormFieldControl<Date>(null, { required: false }),
-    startTime: new FormFieldControl<Date>(null, { required: false }),
-    endDate: new FormFieldControl<Date>(null, { required: false }),
-    endTime: new FormFieldControl<Date>(null, { required: false }),
+    startDateAndTime: new FormFieldControl<Date>(new Date(), { required: true }),
+    endDateAndTime: new FormFieldControl<Date>(new Date(), { required: true }),
     description: new FormFieldControl<string>(null, { required: true }),
     venueId: new FormFieldControl<string>(null, { required: false })
 }
+
 
 interface IAddEventProps {
     route: RouteProp<{ params: { groupId: string } }>
 }
 
 const AddEvent = (props: IAddEventProps) => {
-    const [date, setDate] = React.useState(new Date());
-    const [time, setTime] = React.useState(new Date());
     const eventForm = useFormGroup(eventFormControls);
     const alertRef = useRef<ICustomAlertRef>()
     const [isSuccessful, setIsSuccessful] = React.useState(false);
     const groupId = props.route?.params?.groupId
 
 
-    const viewAndroidDatePicker = () => {
-        DateTimePickerAndroid.open({ value: date, mode: 'date' })
-    }
-
-    const viewAndroidTimePicker = () => {
-        DateTimePickerAndroid.open({ value: date, mode: 'time' })
-    }
-
     const handleInputChange = (key: string, value: any) => {
         eventForm.setValue(key, value)
+    }
+
+    const handleDateChange = (key: string, value: any) => {
+        eventForm.setValue(key, value);
+        const startDate = eventForm.get('startDateAndTime')
+        const endDate = eventForm.get('endDateAndTime')
+        if (moment(endDate.value).isBefore(startDate.value)) {
+            eventForm.setError('startDateAndTime', DateErrors.END_DATE_BEFORE_START_DATE);
+        } else if (moment(startDate.value).isBefore(moment.now())) {
+            eventForm.setError('startDateAndTime', DateErrors.PAST_DATE);
+        }
+        else {
+            eventForm.clearError('startDateAndTime')
+        }
     }
 
     const onCreateEvent = React.useCallback(() => {
@@ -55,7 +58,7 @@ const AddEvent = (props: IAddEventProps) => {
             const newEvent = eventForm.getValue() as Event;
             newEvent.venueId = '8f8c298e-ef85-43d3-aa3e-cf75092ad60a'
             newEvent.noOfParticipants = +newEvent.noOfParticipants
-            newEvent.groupId = groupId  
+            newEvent.groupId = groupId
             newEvent.creatorId = 'e2462a2d-dbca-45ee-b182-76367754634f'
             httpClient.post("events", newEvent).then(response => {
                 setIsSuccessful(true)
@@ -68,14 +71,14 @@ const AddEvent = (props: IAddEventProps) => {
 
     }, [])
 
-    const onClose = () => {
+    const onAlertClose = React.useCallback(() => {
         if (isSuccessful) {
             navigationRef.current?.goBack();
         }
-    }
+    }, [isSuccessful])
 
     return (
-        <View margin={3}>
+        <ScrollView margin={2}>
             <Card style={{ padding: 8 }}>
                 <VStack>
                     <HStack marginBottom={3}>
@@ -83,66 +86,59 @@ const AddEvent = (props: IAddEventProps) => {
                             size={8} color={'lightBlue.600'} />
                         <Text fontSize={18} fontWeight={'bold'}>Add Event</Text>
                     </HStack>
-                    <VStack space={3}>
-                        <FormControl isInvalid={!eventForm.isFieldValid('name')}>
-                            <FormControl.Label>Event Name</FormControl.Label>
-                            <Input size={'md'} variant={'underlined'} placeholder='Enter Event Name'
-                                onChangeText={text => handleInputChange('name', text)} />
-                        </FormControl>
-                        <FormControl isInvalid={!eventForm.isFieldValid('type')}>
-                            <FormControl.Label>Event type</FormControl.Label>
-                            <Select size={'md'} variant={'underlined'} placeholder='Select Event type'
-                                onValueChange={text => handleInputChange('type', text)}>
-                                <Select.Item label='Sports' value='SPORTS' />
-                            </Select>
-                        </FormControl>
-                        <FormControl isInvalid={!eventForm.isFieldValid('description')}>
-                            <FormControl.Label>Description</FormControl.Label>
-                            <TextArea autoCompleteType={''} placeholder='Enter Description' size={'md'}
-                                onChangeText={text => handleInputChange('description', text)} />
-                        </FormControl>
-                        <FormControl isInvalid={!eventForm.isFieldValid('noOfParticipants')}>
-                            <FormControl.Label>Max number of Participants</FormControl.Label>
-                            <Input size={'md'} variant={'underlined'} placeholder='No. of Participants'
-                                onChangeText={text => handleInputChange('noOfParticipants', text)} />
-                        </FormControl>
-                        <FormControl>
+                    <FormControl isInvalid={!eventForm.isFieldValid('name')}>
+                        <FormControl.Label>Event Name</FormControl.Label>
+                        <Input size={'md'} variant={'underlined'} placeholder='Enter Event Name'
+                            onChangeText={text => handleInputChange('name', text)} />
+                    </FormControl>
+                    <FormControl isInvalid={!eventForm.isFieldValid('type')}>
+                        <FormControl.Label>Event type</FormControl.Label>
+                        <Select size={'md'} variant={'underlined'} placeholder='Select Event type'
+                            onValueChange={text => handleInputChange('type', text)}>
+                            <Select.Item label='Sports' value='SPORTS' />
+                        </Select>
+                    </FormControl>
+                    <FormControl isInvalid={!eventForm.isFieldValid('description')}>
+                        <FormControl.Label>Description</FormControl.Label>
+                        <TextArea autoCompleteType={''} placeholder='Enter Description' size={'md'}
+                            onChangeText={text => handleInputChange('description', text)} />
+                    </FormControl>
+                    <FormControl isInvalid={!eventForm.isFieldValid('noOfParticipants')}>
+                        <FormControl.Label>Max number of Participants</FormControl.Label>
+                        <Input size={'md'} variant={'underlined'} placeholder='No. of Participants'
+                            onChangeText={text => handleInputChange('noOfParticipants', text)} />
+                    </FormControl>
+                    <Box>
+                        <FormControl isInvalid={!eventForm.isFieldValid('startDateAndTime')}>
                             <FormControl.Label>Start / End Date & Time</FormControl.Label>
-                            {Platform.OS === 'ios' && <VStack space={1} alignItems={'flex-start'}>
-                                <DateTimePicker value={new Date()} mode='datetime' />
-                                <DateTimePicker value={new Date()} mode='datetime' />
-                            </VStack>}
-                            {Platform.OS === 'android' && <VStack space={1}>
-                                <HStack space={2}>
-                                    <Button backgroundColor={'trueGray.200'}
-                                        onPress={viewAndroidDatePicker} padding={2}>
-                                        <Text>{date.toDateString()}</Text></Button>
-                                    <Button backgroundColor={'trueGray.200'}
-                                        onPress={viewAndroidTimePicker} padding={2}>
-                                        <Text>{time.toLocaleTimeString()}</Text></Button>
-                                </HStack>
-                                <HStack space={2}>
-                                    <Button backgroundColor={'trueGray.200'} padding={2}
-                                        onPress={viewAndroidDatePicker}>
-                                        <Text>{date.toDateString()}</Text></Button>
-                                    <Button backgroundColor={'trueGray.200'}
-                                        onPress={viewAndroidTimePicker} padding={2}>
-                                        <Text>{time.toLocaleTimeString()}</Text></Button>
-                                </HStack>
-                            </VStack>}
+                            <DatePicker mode='datetime' value={eventForm.get('startDateAndTime').value}
+                                onValueChange={(date) => handleDateChange('startDateAndTime', date)} />
+                            <DatePicker mode='datetime' value={eventForm.get('endDateAndTime').value} style={{ marginTop: 5 }}
+                                onValueChange={(date) => handleDateChange('endDateAndTime', date)} />
+                            {eventForm.get('startDateAndTime').error == DateErrors.END_DATE_BEFORE_START_DATE
+                                && <FormControl.ErrorMessage size="s"
+                                    leftIcon={<WarningOutlineIcon size="xs" />} >
+                                    Start date should be greater than End date
+                                </FormControl.ErrorMessage>}
+                            {eventForm.get('startDateAndTime').error == DateErrors.PAST_DATE
+                                && <FormControl.ErrorMessage size="s"
+                                    leftIcon={<WarningOutlineIcon size="xs" />} >
+                                    Start Date should be a future date & time
+                                </FormControl.ErrorMessage>}
                         </FormControl>
-                        <FormControl>
-                            <FormControl.Label>Venue</FormControl.Label>
-                            <Input size={'md'} variant={'underlined'} placeholder='Enter Venue'
-                                isRequired={true} />
-                        </FormControl>
-                        <Button onPress={onCreateEvent}>
-                            <Text color={'white'}>Create Event</Text></Button>
-                        <CustomAlertDialog ref={alertRef as unknown as any} title='Create Event' onClose={onClose} />
-                    </VStack>
+                    </Box>
+                    <FormControl>
+                        <FormControl.Label>Venue</FormControl.Label>
+                        <Input size={'md'} variant={'underlined'} placeholder='Enter Venue'
+                            isRequired={true} />
+                    </FormControl>
+                    <Button onPress={onCreateEvent} marginTop={3}>
+                        <Text color={'white'}>Create Event</Text></Button>
+                    <CustomAlertDialog ref={alertRef as unknown as any} title='Create Event'
+                        onClose={onAlertClose} />
                 </VStack>
             </Card>
-        </View>
+        </ScrollView>
     )
 }
 

@@ -4,7 +4,7 @@ import { Box, HStack, Icon, Image, Text } from 'native-base'
 import React, { useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
-import Card from '../../components/Card'
+import Card from '../../components/ui-components/Card'
 import httpClient from '../../config'
 import { Group } from '../../core'
 import { LOGIN_BG_COLOR } from '../../core/constants'
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   groupDetailContainer: {
     backgroundColor: 'black',
     height: '100%',
-    ...borderStyles.borderRadius
+    ...borderStyles.borderRadius,
   },
   groupHeaderContainer: {
     alignItems: 'center',

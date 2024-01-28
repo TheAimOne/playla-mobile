@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
-import Card from './Card'
 import { ScrollView, Spinner, Text, VStack } from 'native-base'
-import { Group } from '../core'
-import GroupCard from './GroupCard'
-import httpClient from '../config'
-import { useAppSelector } from '../store/hooks'
-import { selectMemberId } from '../store/features/user/user-slice'
-import { useIsFocused } from '@react-navigation/native'
+import React, { useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { navigationRef } from '../RootNavigation'
+import httpClient from '../config'
+import { Group, useIfFocused } from '../core'
+import { selectMemberId } from '../store/features/user/user-slice'
+import { useAppSelector } from '../store/hooks'
+import Card from './ui-components/Card'
+import GroupCard from './GroupCard'
 
 const MyGroups = () => {
     const memberId = useAppSelector(selectMemberId)
     const [groupList, setGroupList] = useState<Group[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const isFocused = useIsFocused()
 
-    useEffect(() => {
+    useIfFocused(() => {
         setIsLoading(true)
         httpClient.get("member/group", { params: { memberId: memberId } }).then(groupList => {
             setIsLoading(false)
@@ -24,7 +22,7 @@ const MyGroups = () => {
         }).catch(err => {
             setIsLoading(false)
         })
-    }, [])
+    })
 
     const onGroupPress = React.useCallback((group: Group) => {
         if (!!group?.groupId) {

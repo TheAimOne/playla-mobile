@@ -15,8 +15,19 @@ export interface Event {
     type: EventTypes,
     status: EventStatus,
     noOfParticipants: number,
+    noOfJoinedParticipants: number
+    startDateAndTime: Date
+    endDateAndTime: Date
     creatorId: string,
     createTime: Date,
     updateTime: Date,
     deleteTime: Date
+}
+
+
+export interface EventDisplay extends Event {
+    startDateDisplay: string
+    startTimeDisplay: string
+    endDateDisplay: string
+    endTimeDislay: string
 }

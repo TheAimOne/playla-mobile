@@ -1,23 +1,27 @@
 import { MaterialIcons } from '@expo/vector-icons'
-import { Box, HStack, Heading, Icon } from 'native-base'
+import { Box, HStack, Heading, Icon, Text } from 'native-base'
 import React from 'react'
 import { StatusBar, StyleSheet } from 'react-native'
 
+const Logo = () => (
+    <HStack style={styles.container}>
+        <Icon size={8} as={<MaterialIcons name='sports-volleyball' />} color={"green.800"} />
+        <Text color={'green.800'} fontFamily={'kayana'} fontSize={31}
+            paddingLeft={1} marginTop={1}>PlayLah!</Text>
+    </HStack>
+)
 
 const TopBar = () => {
 
     return (
         <>
             <StatusBar barStyle={"default"} backgroundColor={"green"} />
-            <HStack style={styles.container}>
-                <Icon size={8} as={<MaterialIcons name='sports-soccer' />} color={"green.800"}/>
-                <Heading color={'green.800'} >Play Lah!</Heading>
-            </HStack>
+            <Logo />
         </>
     )
 }
 
-export default TopBar
+export { TopBar, Logo }
 
 const styles = StyleSheet.create({
     container: {
@@ -25,7 +29,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flex: 1,
         flexDirection: 'row'
-        // flex: 1,
-        // justifyContent: 'center',
     }
 })
