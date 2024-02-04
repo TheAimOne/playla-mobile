@@ -1,10 +1,9 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import { Icon } from "native-base";
+import React from "react";
+import { navigationRef } from "../RootNavigation";
 import DrawerButton from "./LeftIcon";
 import { TopBar } from "./TopBar";
-import React from "react";
-import { MaterialIcons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { navigationRef } from "../RootNavigation";
 
 export const headerTitleComponent = (props: any) => <TopBar />;
 export const headerLeftDrawerButtonComponent = (props: any) => <DrawerButton />

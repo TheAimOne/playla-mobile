@@ -26,7 +26,6 @@ const DrawerLayout = () => {
     }, [])
 
     const onLogout = React.useCallback(() => {
-        console.log('dispatch')
         dispatch(clearUser({} as User))
     }, [])
 

@@ -9,6 +9,7 @@ import GroupDetail from '../../pages/group-detail/GroupDetail';
 import Home from '../../pages/home/Home';
 import SearchGroup from '../../pages/search-group/SearchGroup';
 import HeaderLeftBackButton, { headerLeftDrawerButtonComponent, headerTitleComponent } from '../HeaderComponents';
+import AddGroupMember from '../../pages/add-group-member/AddGroupMember';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -46,6 +47,7 @@ const HomeStackNavigator = () => {
     return (<Stack.Navigator>
         <Stack.Screen name='groupDetail' component={GroupDetail as any} options={{ headerShown: false }} />
         <Stack.Screen name='addEvent' component={AddEvent as any} options={{ headerShown: false }} />
+        <Stack.Screen name='addGroupMembers' component={AddGroupMember as any} options={{ headerShown: false }} />
     </Stack.Navigator>)
 }
 
