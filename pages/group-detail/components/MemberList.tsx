@@ -1,4 +1,4 @@
-import { MaterialIcons } from '@expo/vector-icons'
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
 import { Box, Button, Divider, HStack, Icon, Image, ScrollView, Skeleton, Text, VStack, View } from 'native-base'
 import React, { useEffect } from 'react'
 import Card from '../../../components/ui-components/Card'
@@ -41,14 +41,24 @@ const MemberList = ({ groupId }: any) => {
                         <Text fontSize={20}>🚶🏻</Text> No Members</Text>
                 </Box>}
             <ScrollView margin={2}>
-                {memberList.map((member: User, index: number) =>
-                    (<Card key={index} style={{ margin: 2.5, padding: 5 }}>
-                        <HStack id='ar' borderBottomColor={'coolGray.400'} >
-                            <Text marginRight={2}>👤</Text>
-                            <Divider orientation='vertical' marginRight={2} />
-                            <Text>{member.name}</Text>
-                        </HStack>
-                    </Card>)
+                {memberList.map((member: GroupMember, index: number) =>
+                (<Card key={index} style={{ margin: 2.5, padding: 5 }}>
+                    <HStack id='ar' borderBottomColor={'coolGray.400'} >
+                        <VStack justifyContent={'center'} marginRight={2}>
+                            <Icon as={<MaterialCommunityIcons name='account' />}
+                                size={6} color={'primary.600'} />
+                        </VStack>
+                        <Divider orientation='vertical' marginRight={2} />
+                        <VStack flex={1} justifyContent={'space-between'}>
+                            <Text fontWeight={'semibold'}>{member.name}</Text>
+                            <Text color={'gray.400'}>{member.mobile}</Text>
+                        </VStack>
+                        {member.isAdmin &&
+                            <HStack>
+                                <Text fontStyle={'italic'} color={'warmGray.700'}>Admin</Text>
+                            </HStack>}
+                    </HStack>
+                </Card>)
                 )}
             </ScrollView>
             <Button backgroundColor={'primary.600'} style={styles.addButton}

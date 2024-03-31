@@ -11,7 +11,9 @@ export enum FilterOperator {
     CONTAINS = 'CONTAINS',
     NOT_CONTAINS = 'NOT_CONTAINS',
     IN = 'IN',
-    NOT_IN = 'NOT_IN'
+    NOT_IN = 'NOT_IN',
+    GREATER_THAN = 'GREATER_THAN',
+    LESS_THAN = 'LESS_THAN'
 }
 
 export class Filter {
@@ -24,3 +26,5 @@ export class Filter {
     constructor(
     ) { }
 }
+
+

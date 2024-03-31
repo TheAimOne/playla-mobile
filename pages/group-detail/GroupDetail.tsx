@@ -8,7 +8,7 @@ import Card from '../../components/ui-components/Card'
 import httpClient from '../../config'
 import { Group } from '../../core'
 import { LOGIN_BG_COLOR } from '../../core/constants'
-import EventList from './components/EventList'
+import EventTab from './components/EventTab'
 import MemberList from './components/MemberList'
 
 interface GroupDetailProps {
@@ -18,7 +18,7 @@ interface GroupDetailProps {
 const renderScene = ({route, groupId}: any) => {
   switch (route.key) {
     case "events": 
-      return <EventList groupId={groupId} />
+      return <EventTab groupId={groupId} />
     case "members":
       return <MemberList groupId={groupId} />
   }

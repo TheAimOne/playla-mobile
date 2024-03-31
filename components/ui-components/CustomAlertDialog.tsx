@@ -1,13 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons'
-import { AlertDialog, Button, HStack, Icon, Text, VStack } from 'native-base'
+import { AlertDialog, Button, Icon, Text, VStack } from 'native-base'
 import React, { forwardRef, useImperativeHandle } from 'react'
-
-type AlertStatus = "success" | "error" | "warn" | "info"
-
-interface ICustomAlertRef {
-  showAlert: (message: string, details: string, status: AlertStatus) => void
-  closeAlert: (clearMessage?: boolean) => void
-}
+import { AlertStatus, ICustomAlertRef } from '../../core/types/common'
 
 interface ICustomAlertDialogProps {
   title: string
@@ -22,13 +16,13 @@ interface ICustomAlertDialogProps {
 const getIconComponentByStatus = (status: AlertStatus | undefined) => {
   switch (status) {
     case 'success':
-      return <Icon as={<MaterialIcons name='check-circle' />} marginRight={5} color={'green.600'} size={8} />
+      return <Icon as={<MaterialIcons name='check-circle' />} marginRight={5} color={'green.600'} size={24} />
     case 'error':
-      return <Icon as={<MaterialIcons name='dangerous' />} marginRight={5} color={'red.600'} size={9} />
+      return <Icon as={<MaterialIcons name='dangerous' />} marginRight={5} color={'red.600'} size={24} />
     case 'warn':
-      return <Icon as={<MaterialIcons name='error' />} marginRight={5} color={'yellow.600'} size={9} />
+      return <Icon as={<MaterialIcons name='error' />} marginRight={5} color={'yellow.600'} size={24} />
     case 'info':
-      return <Icon as={<MaterialIcons name='info' />} marginRight={5} color={'blue.400'} size={8} />
+      return <Icon as={<MaterialIcons name='info' />} marginRight={5} color={'blue.400'} size={24} />
     default:
       return <></>
   }
@@ -42,7 +36,8 @@ const CustomAlertDialog = forwardRef<ICustomAlertRef, ICustomAlertDialogProps>((
   const [status, setStatus] = React.useState<AlertStatus>();
 
   useImperativeHandle(ref, () => ({
-    showAlert(message: string, details: string, status: AlertStatus) {
+    showAlert(message: string, status: AlertStatus, details?: string, 
+      customIcon?: any, showCloseIcon?: boolean) {
       setIsOpen(true)
       setMessage(message);
       setDetails(details)
@@ -66,25 +61,25 @@ const CustomAlertDialog = forwardRef<ICustomAlertRef, ICustomAlertDialogProps>((
 
   return (
     <AlertDialog isOpen={isOpen} onClose={() => setIsOpen(false)} leastDestructiveRef={cancelRef}>
-      <AlertDialog.Content>
+      <AlertDialog.Content width={'100%'} >
         <AlertDialog.CloseButton />
         <AlertDialog.Header>
           {props.title}
         </AlertDialog.Header>
-        <AlertDialog.Body>
+        <AlertDialog.Body paddingTop={10} paddingBottom={10}>
           {props.alertBody ? props.alertBody :
-            <HStack>
+            <VStack justifyContent={'center'} alignItems={'center'} height={'100%'}>
               {getIconComponentByStatus(status)}
               <VStack flex={1}>
-                <Text>{message}</Text>
-                {details && <Text fontSize={13} color={'gray.500'}>{details}</Text>}
+                <Text fontSize={20}>{message}</Text>
+                {details && <Text fontSize={13}>{details}</Text>}
               </VStack>
-            </HStack>}
+            </VStack>}
         </AlertDialog.Body>
         <AlertDialog.Footer>
           {props.alertFooter || <Button onPress={onClose}>
-                        <Text color={'white'}>Close</Text>
-                    </Button>}
+            <Text color={'white'}>Close</Text>
+          </Button>}
         </AlertDialog.Footer>
       </AlertDialog.Content>
 
@@ -93,8 +88,8 @@ const CustomAlertDialog = forwardRef<ICustomAlertRef, ICustomAlertDialogProps>((
 })
 
 
-export { 
-  CustomAlertDialog, 
+export {
+  CustomAlertDialog,
   ICustomAlertDialogProps,
   ICustomAlertRef
 }

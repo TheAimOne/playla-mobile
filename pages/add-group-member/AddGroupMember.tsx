@@ -1,24 +1,41 @@
-import { Box, Button, Center, Divider, HStack, Input, ScrollView, Spinner, Text, VStack, View } from 'native-base'
-import React, { useRef } from 'react'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import Card from '../../components/ui-components/Card'
-import httpClient from '../../config'
-import { Filter, FilterOperator, User } from '../../core'
-import useDebounce from '../../core/hooks/useDebounce'
-import { StyleSheet } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { RouteProp } from '@react-navigation/native'
-import { CustomAlertDialog, ICustomAlertRef } from '../../components/ui-components/CustomAlertDialog'
+import { Box, Button, Center, HStack, Icon, Input, ScrollView, Spinner, Text, VStack, View } from 'native-base'
+import React, { useRef } from 'react'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { navigationRef } from '../../RootNavigation'
+import Card from '../../components/ui-components/Card'
+import { CustomAlertDialog, ICustomAlertRef } from '../../components/ui-components/CustomAlertDialog'
+import httpClient from '../../config'
+import { Filter, FilterOperator, User, UserFilter } from '../../core'
+import useDebounce from '../../core/hooks/useDebounce'
 
-const MemberListItem = ({ user }: { user: User }) => {
+interface IMemberListItemProps {
+  user: User,
+  showClose: boolean,
+  onDeleteItem?: (user: User) => void
+}
+
+const MemberListItem = ({ user, showClose, onDeleteItem }: IMemberListItemProps) => {
   return (
-    <HStack justifyContent={'space-between'}>
+    <>
+      {showClose && onDeleteItem &&
+        <TouchableOpacity onPress={() => onDeleteItem!(user)}
+          style={styles.memberItemClose}>
+          <Icon as={<MaterialCommunityIcons name='close-circle' />}
+            size={19} color={'red.700'} />
+        </TouchableOpacity>
+      }
       <VStack>
-        <Text fontSize={16} fontWeight={'bold'}>{user.name}</Text>
-        <Text color={'gray.500'}>✉️ {user.email}</Text>
+        <Text fontSize={15} fontWeight={'medium'}>{user.name}</Text>
+        <HStack justifyContent={'space-between'}>
+          <Text color={'gray.500'}>📞 {user.mobile}</Text>
+          <Text color={'gray.500'}>✉️ {user.email}</Text>
+        </HStack>
       </VStack>
-      <Text color={'gray.500'}>📞 {user.mobile}</Text>
-    </HStack>)
+
+    </>
+  )
 }
 
 interface IAddGroupMemberProps {
@@ -33,21 +50,33 @@ const AddGroupMember = (props: IAddGroupMemberProps) => {
   const alertRef = useRef<ICustomAlertRef>()
   const groupId = props.route.params.groupId
   const [isSuccessful, setIsSuccessful] = React.useState(false)
+  const [isSearchListPresent, setIsSearchListPresent] = React.useState(true)
 
   const onInputChange = useDebounce((text: string) => {
     if (!text) {
       setSearchUserList([])
       return
     }
-    if (text.length < 3) return;
+    if (text.length < 2) return;
 
-    let filter = new Filter();
-    filter.isAnd = false
-    filter.criteria = [{ key: 'name', value: text, operator: FilterOperator.CONTAINS },
-    { key: 'email', value: text, operator: FilterOperator.CONTAINS }];
+    let filter = new UserFilter();
+
+    filter.filter.isAnd = false
+    filter.filter.criteria = [
+      { key: 'name', value: text, operator: FilterOperator.CONTAINS },
+      { key: 'email', value: text, operator: FilterOperator.CONTAINS }
+    ];
+    filter.excludeUserByGroupId = true
+    filter.groupId = groupId
+
     setLoading(true)
     httpClient.post('users/search', filter).then((response: any) => {
       setSearchUserList(response?.data?.data || [])
+      if (response?.data?.data.length === 0) {
+        setIsSearchListPresent(false)
+      } else {
+        setIsSearchListPresent(true)
+      }
       setLoading(false)
     }, err => { setLoading(false) })
   }, 2000)
@@ -61,25 +90,31 @@ const AddGroupMember = (props: IAddGroupMemberProps) => {
     })
   }, [])
 
-  const onAddMember = React.useCallback(() => {
+  const onAddMember = () => {
 
     if (selectedUserList) {
       const payload = {
         groupId: groupId,
-        members: selectedUserList.map(user => ({memberId: user.userId, isAdmin: false}))
+        members: selectedUserList.map(user => ({ memberId: user.userId, isAdmin: false }))
       }
       httpClient.post('group/members', payload).then(_ => {
         setIsSuccessful(true)
         alertRef.current?.showAlert("Group Members Added Successfully", "", "success");
       })
     }
-  }, [])
+  }
 
   const onAlertClose = React.useCallback(() => {
     if (isSuccessful) {
-        navigationRef.current?.goBack();
+      navigationRef.current?.goBack();
     }
-}, [isSuccessful])
+  }, [isSuccessful])
+
+  const onDeleteItem = (user: User) => {
+    setSelectedUserList(prevValue => {
+      return prevValue.filter(selectedUser => selectedUser.userId !== user.userId)
+    })
+  }
 
   return (
     <View backgroundColor={'white'} height={'100%'}>
@@ -88,31 +123,32 @@ const AddGroupMember = (props: IAddGroupMemberProps) => {
           <Text fontSize={20} fontWeight={'bold'}>Add Group Members</Text>
           <Button onPress={onAddMember}><Text color={'white'}>Save</Text></Button>
         </HStack>
+        <ScrollView height={'30%'} marginTop={3}>
+          {selectedUserList.map((user: User, index: number) => (
+            <Card style={{ margin: 1 }} key={index}>
+              <MemberListItem user={user} showClose={true} key={index}
+                onDeleteItem={onDeleteItem} />
+            </Card>
+          ))}
+        </ScrollView>
         <Input marginTop={5} placeholder='Search User by Username or email'
           onChangeText={onInputChange} />
         {loading && <Center> <Spinner size={'lg'} /></Center>}
-        <ScrollView height={'30%'}>
+        {!isSearchListPresent &&
+          <Center marginTop={3}>
+            <Text color={'gray.400'}>No Users Found</Text>
+          </Center>}
+        {searchUserList.length !== 0 && <ScrollView >
           {searchUserList.map((user: User, index: number) => (
             <TouchableOpacity onPress={() => onUserSelect(user)} key={index}>
               <Box borderColor={'gray.200'} style={styles.searchItem}>
-                <MemberListItem user={user} />
+                <MemberListItem user={user} showClose={false} />
               </Box>
             </TouchableOpacity>
           ))}
-        </ScrollView>
-        <Divider />
-        <Box marginTop={2}>
-          <Text fontSize={18} fontWeight={'semibold'}>Selected Members</Text>
-          <ScrollView height={'40%'}>
-            {selectedUserList.map((user: User, index: number) => (
-              <Card style={{ margin: 1 }}>
-                <MemberListItem user={user} key={index} />
-              </Card>
-            ))}
-          </ScrollView>
-        </Box>
+        </ScrollView>}
         <CustomAlertDialog ref={alertRef as unknown as any} title='Create Event'
-                        onClose={onAlertClose}/>
+          onClose={onAlertClose} />
       </VStack>
     </View>
   )
@@ -124,6 +160,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderRadius: 5,
     padding: 3
+  },
+  memberItemClose: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    padding: 5,
+    zIndex: 99
   }
 })
 

@@ -1,11 +1,11 @@
-import { Box, Button, HStack, Icon, Input, Text, VStack, View } from 'native-base'
+import LottieView from 'lottie-react-native'
+import { Box, Button, Input, Text, VStack } from 'native-base'
 import React from 'react'
-import Card from '../../components/ui-components/Card'
 import { StyleSheet } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { setUser } from '../../store/features/user/user-slice'
+import Card from '../../components/ui-components/Card'
 import { LOGIN_BG_COLOR } from '../../core/constants'
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+import { setUser } from '../../store/features/user/user-slice'
 
 interface LoginProps {
     loginSuccess: () => void
@@ -14,18 +14,18 @@ interface LoginProps {
 const Login = (props: LoginProps) => {
     const dispatch = useDispatch()
 
-    const onLogin = React.useCallback(() => {
+    const onLogin = () => {
         props.loginSuccess()
         dispatch(setUser({
             isAuthenticated: true,
-            memberId: "733385ca-ff27-421b-a905-82865eb66004",
+            userId: "733385ca-ff27-421b-a905-82865eb66004",
             name: "Ajay",
             status: "ACTIVE",
             email: 'ajay.sankaran96@gmail.com',
             mobile: '8283810',
             shortName: 'Aj'
         }))
-    }, [])
+    }
 
     return (
         <Box bg={LOGIN_BG_COLOR} height={'100%'} flex={1} justifyContent={'center'}>

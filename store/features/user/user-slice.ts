@@ -19,7 +19,7 @@ export const userSlice = createSlice({
             const user = action.payload;
             state.isAuthenticated = user.isAuthenticated;
             state.email = user.email;
-            state.memberId = user.memberId;
+            state.userId = user.userId;
             state.mobile = user.mobile;
             state.name = user.name;
             state.shortName = user.shortName;
@@ -36,7 +36,7 @@ export const userSlice = createSlice({
 export const { setUser, clearUser } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;
-export const selectMemberId = (state: RootState) => state.user.memberId
+export const selectMemberId = (state: RootState) => state.user.userId
 
 export const selectIsAuthenticated = (state: RootState) => state.user.isAuthenticated
 

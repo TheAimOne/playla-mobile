@@ -22,6 +22,7 @@ export interface Event {
     createTime: Date,
     updateTime: Date,
     deleteTime: Date
+    totalCost: number
 }
 
 
@@ -29,5 +30,21 @@ export interface EventDisplay extends Event {
     startDateDisplay: string
     startTimeDisplay: string
     endDateDisplay: string
-    endTimeDislay: string
+    endTimeDisplay: string
+    venueName: string
+    venueAddress: string
+    latitude: number
+    longitude: number
+    costPerPerson: number
+}
+
+export interface EventMember {
+    id: number,
+    eventId: string,
+    groupId: string,
+    memberId: string,
+    action: string,
+    name: string,
+    type: string, 
+    status: string,
 }

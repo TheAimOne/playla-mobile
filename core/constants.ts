@@ -13,3 +13,11 @@ export const GROUP_HEADER_BG_COLOR = {
         end: [1, 0]
     }
 }
+
+export const EVENT_DETAIL_BG_COLOR = {
+    linearGradient: {
+        colors: ['#c31432', '#240b36'],
+        start: [0, 1],
+        end: [1, 0]
+    }
+}

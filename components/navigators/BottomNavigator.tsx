@@ -10,6 +10,7 @@ import Home from '../../pages/home/Home';
 import SearchGroup from '../../pages/search-group/SearchGroup';
 import HeaderLeftBackButton, { headerLeftDrawerButtonComponent, headerTitleComponent } from '../HeaderComponents';
 import AddGroupMember from '../../pages/add-group-member/AddGroupMember';
+import EventDetail from '../../pages/event-detail/EventDetail';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -17,7 +18,7 @@ const Stack = createNativeStackNavigator();
 export type BottomNavigatorConfig = { [key: string]: { icon: string, name: string } }
 
 const iconAndNames: BottomNavigatorConfig = {
-    home: { icon: 'groups', name: 'My Groups' },
+    home: { icon: 'home', name: 'My Groups' },
     search: { icon: 'search', name: 'Search' },
     event: { icon: 'event', name: 'Events' }
 }
@@ -35,11 +36,13 @@ const tabNavigationOption: BottomTabNavigationOptions = {
     tabBarLabelStyle: { fontSize: 14, color: 'white' },
     tabBarInactiveTintColor: 'white',
     tabBarActiveTintColor: '#eab308',
+    tabBarHideOnKeyboard: true,
+    tabBarItemStyle: {
+        padding: 5
+    },
+    tabBarShowLabel: false,
     tabBarStyle: {
         backgroundColor: '#15803d',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        padding: 10,
     },
 }
 
@@ -48,6 +51,7 @@ const HomeStackNavigator = () => {
         <Stack.Screen name='groupDetail' component={GroupDetail as any} options={{ headerShown: false }} />
         <Stack.Screen name='addEvent' component={AddEvent as any} options={{ headerShown: false }} />
         <Stack.Screen name='addGroupMembers' component={AddGroupMember as any} options={{ headerShown: false }} />
+        <Stack.Screen name='eventDetail' component={EventDetail as any} options={{ headerShown: false }} />
     </Stack.Navigator>)
 }
 
