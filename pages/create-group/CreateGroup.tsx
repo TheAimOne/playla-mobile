@@ -39,8 +39,7 @@ const CreateGroup = () => {
                 alertRef.current.showAlert("Group Created Successfully", "", "success")
                 setIsSuccessful(true)
             }).catch(err => {
-                alertRef.current.showAlert("Group Creation Failed",
-                    `Reason: ${err?.message || 'No Reason Provided'}`, "error")
+                alertRef.current.showAlert("Group Creation Failed", "error")
                 setIsSuccessful(false)
             })
         }

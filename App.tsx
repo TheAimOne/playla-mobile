@@ -41,15 +41,9 @@ export default function App() {
     return null;
   }
 
-  const loginSuccess = () => {
-
-  }
-
   return (
     <NativeBaseProvider config={config} theme={theme} >
       <Provider store={store}>
-        {/* {!isAuthenticated && <Login loginSuccess={loginSuccess} />}
-        {isAuthenticated && <Layout />} */}
         <Layout />
       </Provider>
     </NativeBaseProvider>

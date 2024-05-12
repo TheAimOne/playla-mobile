@@ -22,7 +22,7 @@ const DrawerLayout = () => {
     const dispatch = useDispatch()
 
     const openLogoutAlert = React.useCallback(() => {
-        alertRef.current?.showAlert("Are you sure you want to Logout?", "", "warn");
+        alertRef.current?.showAlert("Are you sure you want to Logout?", "warn");
     }, [])
 
     const onLogout = React.useCallback(() => {

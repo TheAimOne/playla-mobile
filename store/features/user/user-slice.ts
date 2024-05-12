@@ -5,7 +5,7 @@ import { RootState } from '../../store'
 export const USER_SLICE = 'user'
 
 const initialState: User = {
-    memberId: "",
+    userId: "",
     name: "",
     status: "",
     isAuthenticated: false
@@ -17,6 +17,7 @@ export const userSlice = createSlice({
     reducers: {
         setUser: (state: User, action: PayloadAction<User>) => {
             const user = action.payload;
+            state.userId = user.userId
             state.isAuthenticated = user.isAuthenticated;
             state.email = user.email;
             state.userId = user.userId;

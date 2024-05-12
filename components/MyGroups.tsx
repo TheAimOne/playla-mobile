@@ -16,6 +16,7 @@ const MyGroups = () => {
 
     useIfFocused(() => {
         setIsLoading(true)
+        console.log(memberId)
         httpClient.get("member/group", { params: { memberId: memberId } }).then(groupList => {
             setIsLoading(false)
             setGroupList(groupList?.data?.data ?? [])

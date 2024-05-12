@@ -3,7 +3,6 @@ import { RouteProp } from '@react-navigation/native';
 import moment from 'moment';
 import { Box, Button, FormControl, HStack, Icon, Input, ScrollView, Select, Text, TextArea, VStack, WarningOutlineIcon } from 'native-base';
 import React, { useRef } from 'react';
-import { navigationRef } from '../../RootNavigation';
 import AlertPage from '../../components/ui-components/AlertPage';
 import Card from '../../components/ui-components/Card';
 import { ICustomAlertRef } from '../../components/ui-components/CustomAlertDialog';
