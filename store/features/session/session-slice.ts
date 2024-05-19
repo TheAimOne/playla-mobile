@@ -9,6 +9,7 @@ const initialState: AuthState = {
     userId: "",
     accessToken: "",
     accessTokenExpiry: undefined,
+    isAuthenticated: false,
     session: {
       refreshToken: "",
       deviceId: "",
@@ -27,6 +28,7 @@ export const sessionSlice = createSlice({
             state.accessTokenExpiry = auth.accessTokenExpiry
             state.userId = auth.userId;
             state.session = auth.session;
+            state.isAuthenticated = true
             permStorage.save({
                 key: SESSION_SLICE,
                 data: {
@@ -42,6 +44,7 @@ export const sessionSlice = createSlice({
         },
         clearSession: (state: any, action: PayloadAction<AuthState>) => {
             state = initialState
+            permStorage.remove({key: SESSION_SLICE})
             return state
         }
     }
@@ -51,5 +54,7 @@ export const { setSession, setAccessToken, clearSession } = sessionSlice.actions
 
 export const selectSession = (state: any) => state.session;
 export const selectAccessToken = (state: any) => state.session.accessToken;
+
+export const selectIsAuthenticated = (state: any) => state.session.isAuthenticated
 
 export default sessionSlice.reducer;

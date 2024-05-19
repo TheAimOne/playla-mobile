@@ -29,15 +29,14 @@ const Login = (props: LoginProps) => {
             httpClient.post('user/authenticate', authObj).then(res => {
                 const authData = res.data?.data
                 const user = authData?.user;
-                console.log(authData)
                 dispatch(setUser({
-                    isAuthenticated: true,
                     ...user
                 }))
                 dispatch(setSession({
                     userId: user.userId,
                     accessToken: authData.token,
                     accessTokenExpiry: convertUtcDateTimeToLocalDateTime(authData.tokenExpiry!),
+                    isAuthenticated: true,
                     session: {
                         deviceId: authData.deviceId,
                         deviceType: authData.deviceType,

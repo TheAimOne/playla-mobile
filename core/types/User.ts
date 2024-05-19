@@ -7,7 +7,6 @@ export interface User {
     email?: string
     mobile?: string
     status: string
-    isAuthenticated: boolean
 }
 
 export class UserFilter {

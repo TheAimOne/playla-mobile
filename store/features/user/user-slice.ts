@@ -8,7 +8,6 @@ const initialState: User = {
     userId: "",
     name: "",
     status: "",
-    isAuthenticated: false
 }
 
 export const userSlice = createSlice({
@@ -18,7 +17,6 @@ export const userSlice = createSlice({
         setUser: (state: User, action: PayloadAction<User>) => {
             const user = action.payload;
             state.userId = user.userId
-            state.isAuthenticated = user.isAuthenticated;
             state.email = user.email;
             state.userId = user.userId;
             state.mobile = user.mobile;
@@ -38,7 +36,5 @@ export const { setUser, clearUser } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;
 export const selectMemberId = (state: RootState) => state.user.userId
-
-export const selectIsAuthenticated = (state: RootState) => state.user.isAuthenticated
 
 export default userSlice.reducer

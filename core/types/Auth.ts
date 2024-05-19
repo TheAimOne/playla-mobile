@@ -11,4 +11,5 @@ export interface AuthState {
     accessToken: string,
     accessTokenExpiry?: Date,
     session: Session
+    isAuthenticated: boolean
 }
