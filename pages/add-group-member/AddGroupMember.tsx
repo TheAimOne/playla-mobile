@@ -6,7 +6,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { navigationRef } from '../../RootNavigation'
 import Card from '../../components/ui-components/Card'
 import { CustomAlertDialog, ICustomAlertRef } from '../../components/ui-components/CustomAlertDialog'
-import httpClient from '../../config'
+import httpClient from '../../axios-config'
 import { Filter, FilterOperator, User, UserFilter } from '../../core'
 import useDebounce from '../../core/hooks/useDebounce'
 

@@ -10,21 +10,28 @@ const commonStyles = StyleSheet.create({
         borderRadius: 20,
     },
     eventSkeletonStyle: {
-        borderWidth: 2, 
-        borderRadius: 10, 
+        borderWidth: 2,
+        borderRadius: 10,
     }
 })
 
 
 const validateEmail = (email: string) => {
     return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+};
+
+const convertUtcDateTimeToLocalDateTime = (utcDateTime: string) => {
+    const utc = new Date(utcDateTime);
+    return new Date(utc.getTime() - utc.getTimezoneOffset() * 60000);
+}
+
 
 export {
     commonStyles,
-    validateEmail
+    validateEmail,
+    convertUtcDateTimeToLocalDateTime
 }

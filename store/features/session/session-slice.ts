@@ -1,12 +1,14 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AuthState } from "../../../core/types/Auth";
 import permStorage from "../../PermStorage";
+import { convertUtcDateTimeToLocalDateTime } from "../../../core/utils";
 
 export const SESSION_SLICE = 'session';
 
 const initialState: AuthState = {
     userId: "",
     accessToken: "",
+    accessTokenExpiry: undefined,
     session: {
       refreshToken: "",
       deviceId: "",
@@ -22,6 +24,7 @@ export const sessionSlice = createSlice({
         setSession: (state: any, action: PayloadAction<AuthState>) => {
             const auth = action.payload;
             state.accessToken = auth.accessToken;
+            state.accessTokenExpiry = auth.accessTokenExpiry
             state.userId = auth.userId;
             state.session = auth.session;
             permStorage.save({
@@ -32,8 +35,9 @@ export const sessionSlice = createSlice({
             })
             return state
         },
-        setAccessToken: (state: any, action: PayloadAction<string>) => {
-            state.accessToken = action.payload;
+        setAccessToken: (state: any, action: PayloadAction<{accessToken: string, accessTokenExpiry: string}>) => {
+            state.accessToken = action.payload.accessToken;
+            state.accessTokenExpiry = convertUtcDateTimeToLocalDateTime(action.payload.accessTokenExpiry)
             return state
         },
         clearSession: (state: any, action: PayloadAction<AuthState>) => {

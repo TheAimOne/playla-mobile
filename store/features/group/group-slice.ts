@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import httpClient from "../../../config";
+import httpClient from "../../../axios-config";
 import { Group } from "../../../core/types/Group";
 import { AppDispatch } from "../../store";
 

@@ -3,7 +3,7 @@ import { Box, Button, Divider, HStack, Icon, Image, ScrollView, Skeleton, Text, 
 import React, { useEffect } from 'react'
 import Card from '../../../components/ui-components/Card'
 import { StyleSheet } from 'react-native'
-import httpClient from '../../../config'
+import httpClient from '../../../axios-config'
 import { navigationRef } from '../../../RootNavigation'
 import { GroupMember, User, useIfFocused } from '../../../core'
 

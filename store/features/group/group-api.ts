@@ -1,4 +1,4 @@
-import httpClient from "../../../config"
+import httpClient from "../../../axios-config"
 import { AppDispatch } from "../../store"
 import { setGroupList } from "./group-slice"
 

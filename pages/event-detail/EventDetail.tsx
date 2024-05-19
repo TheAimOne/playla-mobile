@@ -5,7 +5,7 @@ import { Button, Divider, HStack, Icon, Image, ScrollView, Spinner, Text, VStack
 import React, { useEffect, useMemo, useRef } from 'react'
 import { StyleSheet } from 'react-native'
 import Card from '../../components/ui-components/Card'
-import httpClient from '../../config'
+import httpClient from '../../axios-config'
 import { EventDisplay, EventMember } from '../../core'
 import { useAppSelector } from '../../store/hooks'
 import { selectMemberId } from '../../store/features/user/user-slice'

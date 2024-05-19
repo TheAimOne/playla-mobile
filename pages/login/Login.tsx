@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { useDispatch } from 'react-redux'
 import Card from '../../components/ui-components/Card'
-import httpClient from '../../config'
+import httpClient from '../../axios-config'
 import { LOGIN_BG_COLOR } from '../../core/constants'
-import { validateEmail } from '../../core/utils'
+import { convertUtcDateTimeToLocalDateTime, validateEmail } from '../../core/utils'
 import { setSession } from '../../store/features/session/session-slice'
 import { setUser } from '../../store/features/user/user-slice'
 
@@ -19,7 +19,6 @@ const Login = (props: LoginProps) => {
     const [password, setPassword] = useState<string | undefined>();
 
     const onLogin = () => {
-        console.log(userNameOrEmail, password)
         if (userNameOrEmail && password) {
             const authObj = {
                 userId: userNameOrEmail,
@@ -29,7 +28,8 @@ const Login = (props: LoginProps) => {
             }
             httpClient.post('user/authenticate', authObj).then(res => {
                 const authData = res.data?.data
-                const user = res.data?.data?.user;
+                const user = authData?.user;
+                console.log(authData)
                 dispatch(setUser({
                     isAuthenticated: true,
                     ...user
@@ -37,11 +37,12 @@ const Login = (props: LoginProps) => {
                 dispatch(setSession({
                     userId: user.userId,
                     accessToken: authData.token,
+                    accessTokenExpiry: convertUtcDateTimeToLocalDateTime(authData.tokenExpiry!),
                     session: {
                         deviceId: authData.deviceId,
                         deviceType: authData.deviceType,
                         refreshToken: authData.refreshToken,
-                        refreshTokenExpiry: authData.refreshTokenExpiry
+                        refreshTokenExpiry: convertUtcDateTimeToLocalDateTime(authData.refreshTokenExpiry!)
                     }
                 }))
             })
@@ -50,17 +51,17 @@ const Login = (props: LoginProps) => {
 
     return (
         <Box bg={LOGIN_BG_COLOR} height={'100%'} flex={1} justifyContent={'center'}>
-            <Box margin={5} >
+            <Box margin={2} >
                 <Card style={{ padding: 20 }} >
-                    <Text fontSize={20} fontWeight={'800'}>Login</Text>
+                    <Text fontSize={22} fontWeight={'800'}>Login</Text>
                     <VStack style={styles.loginContainer} >
-                        <Input placeholder='User Name / Email' onChangeText={setUserNameOrEmail} />
-                        <Input placeholder='Password' type='password' onChangeText={setPassword} />
+                        <Input fontSize={16} placeholder='User Name / Email' onChangeText={setUserNameOrEmail} />
+                        <Input fontSize={16} placeholder='Password' type='password' onChangeText={setPassword} />
                         <Button marginTop={15}>
-                            <Text color={'white'} onPress={onLogin}>Login</Text>
+                            <Text color={'white'} fontSize={16} onPress={onLogin}>Login</Text>
                         </Button>
                         <Button>
-                            <Text color={'white'}>Register User</Text>
+                            <Text color={'white'} fontSize={16}>Register User</Text>
                         </Button>
                     </VStack>
                 </Card>

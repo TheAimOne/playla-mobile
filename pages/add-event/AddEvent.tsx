@@ -7,7 +7,7 @@ import AlertPage from '../../components/ui-components/AlertPage';
 import Card from '../../components/ui-components/Card';
 import { ICustomAlertRef } from '../../components/ui-components/CustomAlertDialog';
 import DatePicker from '../../components/ui-components/DatePicker';
-import httpClient from '../../config';
+import httpClient from '../../axios-config';
 import { DateErrors, Event, FormFieldControl } from '../../core';
 import useFormGroup from '../../core/hooks/useFormGroup';
 

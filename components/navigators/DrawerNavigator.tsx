@@ -9,6 +9,8 @@ import BottomNavigator from "./BottomNavigator";
 import { CustomAlertDialog, ICustomAlertRef } from "../ui-components/CustomAlertDialog";
 import HeaderLeftBackButton from "../HeaderComponents";
 import { Logo } from "../TopBar";
+import { clearSession } from "../../store/features/session/session-slice";
+import { AuthState } from "../../core/types/Auth";
 
 const DrawerNavigator = createDrawerNavigator();
 
@@ -27,6 +29,7 @@ const DrawerLayout = () => {
 
     const onLogout = React.useCallback(() => {
         dispatch(clearUser({} as User))
+        dispatch(clearSession({} as AuthState))
     }, [])
 
     return (<DrawerNavigator.Navigator drawerContent={props => (

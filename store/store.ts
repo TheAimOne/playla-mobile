@@ -8,7 +8,7 @@ const store = configureStore({
         user: userSlice,
         session: sessionSlice
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({thunk: true})
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({thunk: true, serializableCheck: false})
 })
 
 store.subscribe(() => {

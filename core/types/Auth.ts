@@ -9,5 +9,6 @@ export interface Session {
 export interface AuthState {
     userId: string
     accessToken: string,
+    accessTokenExpiry?: Date,
     session: Session
 }
